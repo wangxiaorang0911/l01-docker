@@ -1,0 +1,21 @@
+version: '2'
+services:
+  weibo:
+    image: app-weibo:latest
+    env_file: "./app-weibo.env"
+  cron:
+    image: app-weibo:latest
+    env_file: "./app-weibo.env"
+    command: ['cron', '-f']
+  worker:
+    image: app-weibo:latest
+    env_file: "./app-weibo.env"
+    command: ['/usr/bin/supervisord', '-n', '-c', '/etc/supervisor/supervisord.conf']
+  nginx:
+    image: app-nginx:latest
+    volumes_from:
+      - weibo
+    depends_on:
+      - weibo
+    ports:
+      - "8888:80"
